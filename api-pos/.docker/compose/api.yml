@@ -1,0 +1,43 @@
+services:
+  migrate:
+    build:
+      context: ../../
+      dockerfile: Dockerfile
+    env_file:
+      - ../../.env
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      POSTGRES_DB_HOST: db
+      POSTGRES_DB_PORT: 5432
+    command: ["dotnet", "ef", "database", "update"]
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: "no"
+    networks:
+      - app-net
+
+  api-pos:
+    build:
+      context: ../../
+      dockerfile: Dockerfile
+    env_file:
+      - ../../.env
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      POSTGRES_DB_HOST: db
+      POSTGRES_DB_PORT: 5432
+      AUTH_SERVICE_URL: http://host.docker.internal:5007
+    ports:
+      - "5005:5000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    restart: unless-stopped
+    networks:
+      - app-net
+
+networks:
+  app-net:

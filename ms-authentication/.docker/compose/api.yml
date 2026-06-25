@@ -1,0 +1,23 @@
+services:
+  api-auth:
+    build:
+      context: ../../
+      dockerfile: Dockerfile
+    env_file:
+      - ../../.env
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      POSTGRES_DB_HOST: db
+      POSTGRES_DB_PORT: 5432
+    ports:
+      - "5007:5000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - app-net
+networks:
+  app-net:

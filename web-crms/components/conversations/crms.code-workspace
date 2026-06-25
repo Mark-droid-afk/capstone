@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "../../../crms"
+		},
+		{
+			"path": "../.."
+		},
+		{
+			"path": "../../../../multi-repo/a-main/ecommerce"
+		}
+	]
+}
